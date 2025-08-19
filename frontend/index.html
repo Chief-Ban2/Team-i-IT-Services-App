@@ -5,7 +5,30 @@
   <title>Team IT Services App</title>
 </head>
 <body>
-  <h1>Welcome to Team i IT Services App</h1>
+  <h1>Welcome to Team I IT Services App</h1>
   <p>Frontend placeholder page.</p>
+
+  <!-- Visitor count placeholder -->
+  <p><span id="visitor-count">Visitors: …</span></p>
+
+  <!-- Load config.json -->
+  <script>
+    fetch('/config.json')
+      .then(response => response.json())
+      .then(cfg => {
+        window.APP_CONFIG = cfg;
+        console.log('Loaded config:', cfg);
+        // Later: use cfg.apiBaseUrl for API calls
+      })
+      .catch(err => console.error('Failed to load config.json:', err));
+  </script>
 </body>
 </html>
+<script>
+    // Simulate visitor count
+    let visitorCount = 0;
+    setInterval(() => {
+      visitorCount++;
+      document.getElementById('visitor-count').textContent = `Visitors: ${visitorCount}`;
+    }, 5000); // Update every 5 seconds
+  </script>
