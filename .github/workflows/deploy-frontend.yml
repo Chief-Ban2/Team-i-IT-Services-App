@@ -25,9 +25,9 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-    - name: Deploy Frontend to Azure Storage
-      uses: azure/storage-blob-upload@v1
-      with:
-        source: './frontend'          # Path to your built frontend files
-        destination: '$web'           # Required for Azure static website
-        connection-string: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+    - name: Upload Frontend to Azure Blob Storage
+      run: |
+        az storage blob upload-batch \
+          -s ./frontend \
+          -d '$web' \
+          --connection-string "${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}"
