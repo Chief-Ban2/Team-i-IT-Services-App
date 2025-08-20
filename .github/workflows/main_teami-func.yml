@@ -73,8 +73,9 @@ jobs:
           app-name: 'teami-func'
           slot-name: 'Production'
           package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-          publish-profile: ${{ secrets.Azure_Connection_STRING }}
+          publish-profile: ${{ secrets.AZURE_CONNECTION_STRING }}
 
           
+
 
 
