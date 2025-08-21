@@ -19,10 +19,12 @@ jobs:
         node-version: '16'
 
 
-    - name: 'Deploy to Azure Functions'
-      uses: azure/functions-action@v1
-      with:
-        app-name: 'teami-func'
-        slot-name: 'Production'
-        package: ${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}
-        publish-profile: ${{ secrets.Azure_Connection_STRING }}
+    - name: Upload files to Azure Storage
+        uses: azure/cli@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
+              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
+              --source ./dist \
+              --destination '$web'
