@@ -19,12 +19,10 @@ jobs:
         node-version: '16'
 
 
-    - name: Upload files to Azure Storage
-        uses: azure/cli@v1
-        with:
-          inlineScript: |
-            az storage blob upload-batch \
-              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
-              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
-              --source ./dist \
-              --destination '$web'
+    - name: Deploy to Azure Storage
+        run:|
+          az storage blob upload-batch \
+            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
+            --account-key ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }} \
+            --destination '$web' \
+            --source ./build
