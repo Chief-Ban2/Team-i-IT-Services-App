@@ -1,34 +1,42 @@
 name: Deploy Frontend to Azure Storage
-
 on:
-  push:
-    branches:
-      - main  # or your default branch
+  push: { branches: [ main ] }
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-    - name: Set up Node.js (needed for some Azure Actions)
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
 
-
-    - name: Install and build
+      - name: Build
+        working-directory: frontend
         run: |
-          npm install
-          npm run build
+          npm ci
+          npm run build       # adjust if your output folder differs
 
-      # 4. Deploy to Azure Storage using access key
-      - name: Login to Azure
+      - name: Azure login (OIDC)
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Upload to $web
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name teamiprojectfrontend \
+              --auth-mode login \
+              -d '$web' \
+              -s ./frontend/dist \
+              --overwrite
