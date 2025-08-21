@@ -38,5 +38,5 @@ jobs:
               --account-name teamiprojectfrontend \
               --auth-mode login \
               -d '$web' \
-              -s ./frontend/dist \
+              -s ./frontend \
               --overwrite
