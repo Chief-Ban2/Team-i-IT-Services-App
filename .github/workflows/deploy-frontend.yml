@@ -19,10 +19,18 @@ jobs:
         node-version: '16'
 
 
-    - name: Deploy to Azure Storage
-        run:|
-          az storage blob upload-batch \
-            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
-            --account-key ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }} \
-            --destination '$web' \
-            --source ./build
+    - name: Install and build
+        run: |
+          npm install
+          npm run build
+
+      # 4. Deploy to Azure Storage using access key
+      - name: Deploy to Azure Storage
+        uses: azure/cli@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch \
+              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT_NAME }} \
+              --account-key ${{ secrets.AZURE_STORAGE_ACCOUNT_KEY }} \
+              --source ./build \
+              --destination '$web'
